@@ -1,0 +1,24 @@
+// Spring Roo 1.2.0.RELEASE [rev 39eb957] log opened at 2012-02-07 11:32:02
+project --topLevelPackage com.rahul.learn --projectName springws
+mongo setup 
+entity mongo --class ~.domain.Cart --testAutomatically 
+entity mongo --class ~.domain.Item --testAutomatically 
+field reference --fieldName cart --type ~.domain.Cart --cardinality MANY_TO_ONE 
+field string --fieldName itemName --notNull true
+focus --class ~.domain.Cart
+// [failed] field reference --fieldName items --type ~.domain.Item --cardinality ONE_TO_MANY 
+field reference --fieldName items --type ~.domain.Item --cardinality MANY_TO_ONE 
+json all
+repository mongo --interface ~.repository.ItemRepository --entity ~.domain.Item
+// [failed] repository mongo --interface ~.repository.CartRepository --entity ~.domain.Cart
+repository mongo --interface ~.repository.CartRepository --entity ~.domain.Cart
+// [failed] service --interface ~.service.ItemService --entity ~.domain.Item
+// Spring Roo 1.2.0.RELEASE [rev 39eb957] log opened at 2012-02-07 11:42:25
+service --interface ~.service.ItemService --entity ~.domain.Item
+service --interface ~.service.CartService --entity ~.domain.Cart
+service --interface ~.service.ItemService --entity ~.domain.Item
+service --interface ~.service.ItemService --entity ~.domain.Item
+json all
+json all
+web mvc json setup
+web mvc json all
