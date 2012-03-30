@@ -5,7 +5,7 @@ package com.rahul.learn.domain;
 
 import com.rahul.learn.domain.ItemDataOnDemand;
 import com.rahul.learn.domain.ItemIntegrationTest;
-import com.rahul.learn.repository.ItemRepository;
+import com.rahul.learn.service.ItemService;
 import java.math.BigInteger;
 import java.util.List;
 import org.junit.Assert;
@@ -25,67 +25,67 @@ privileged aspect ItemIntegrationTest_Roo_IntegrationTest {
     private ItemDataOnDemand ItemIntegrationTest.dod;
     
     @Autowired
-    ItemRepository ItemIntegrationTest.itemRepository;
+    ItemService ItemIntegrationTest.itemService;
     
     @Test
-    public void ItemIntegrationTest.testCount() {
+    public void ItemIntegrationTest.testCountAllItems() {
         Assert.assertNotNull("Data on demand for 'Item' failed to initialize correctly", dod.getRandomItem());
-        long count = itemRepository.count();
+        long count = itemService.countAllItems();
         Assert.assertTrue("Counter for 'Item' incorrectly reported there were no entries", count > 0);
     }
     
     @Test
-    public void ItemIntegrationTest.testFind() {
+    public void ItemIntegrationTest.testFindItem() {
         Item obj = dod.getRandomItem();
         Assert.assertNotNull("Data on demand for 'Item' failed to initialize correctly", obj);
         BigInteger id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Item' failed to provide an identifier", id);
-        obj = itemRepository.findOne(id);
+        obj = itemService.findItem(id);
         Assert.assertNotNull("Find method for 'Item' illegally returned null for id '" + id + "'", obj);
         Assert.assertEquals("Find method for 'Item' returned the incorrect identifier", id, obj.getId());
     }
     
     @Test
-    public void ItemIntegrationTest.testFindAll() {
+    public void ItemIntegrationTest.testFindAllItems() {
         Assert.assertNotNull("Data on demand for 'Item' failed to initialize correctly", dod.getRandomItem());
-        long count = itemRepository.count();
+        long count = itemService.countAllItems();
         Assert.assertTrue("Too expensive to perform a find all test for 'Item', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<Item> result = itemRepository.findAll();
+        List<Item> result = itemService.findAllItems();
         Assert.assertNotNull("Find all method for 'Item' illegally returned null", result);
         Assert.assertTrue("Find all method for 'Item' failed to return any data", result.size() > 0);
     }
     
     @Test
-    public void ItemIntegrationTest.testFindEntries() {
+    public void ItemIntegrationTest.testFindItemEntries() {
         Assert.assertNotNull("Data on demand for 'Item' failed to initialize correctly", dod.getRandomItem());
-        long count = itemRepository.count();
+        long count = itemService.countAllItems();
         if (count > 20) count = 20;
         int firstResult = 0;
         int maxResults = (int) count;
-        List<Item> result = itemRepository.findAll(new org.springframework.data.domain.PageRequest(firstResult / maxResults, maxResults)).getContent();
+        List<Item> result = itemService.findItemEntries(firstResult, maxResults);
         Assert.assertNotNull("Find entries method for 'Item' illegally returned null", result);
         Assert.assertEquals("Find entries method for 'Item' returned an incorrect number of entries", count, result.size());
     }
     
     @Test
-    public void ItemIntegrationTest.testSave() {
+    public void ItemIntegrationTest.testSaveItem() {
         Assert.assertNotNull("Data on demand for 'Item' failed to initialize correctly", dod.getRandomItem());
         Item obj = dod.getNewTransientItem(Integer.MAX_VALUE);
         Assert.assertNotNull("Data on demand for 'Item' failed to provide a new transient entity", obj);
         Assert.assertNull("Expected 'Item' identifier to be null", obj.getId());
-        itemRepository.save(obj);
+        itemService.saveItem(obj);
         Assert.assertNotNull("Expected 'Item' identifier to no longer be null", obj.getId());
     }
     
     @Test
-    public void ItemIntegrationTest.testDelete() {
+    public void ItemIntegrationTest.testDeleteItem() {
         Item obj = dod.getRandomItem();
         Assert.assertNotNull("Data on demand for 'Item' failed to initialize correctly", obj);
         BigInteger id = obj.getId();
         Assert.assertNotNull("Data on demand for 'Item' failed to provide an identifier", id);
-        obj = itemRepository.findOne(id);
-        itemRepository.delete(obj);
-        Assert.assertNull("Failed to remove 'Item' with identifier '" + id + "'", itemRepository.findOne(id));
+        obj = itemService.findItem(id);
+        itemService.deleteItem(obj);
+        Assert.assertNull("Failed to remove 'Item' with identifier '" + id + "'", itemService.findItem(id));
     }
     
 }
